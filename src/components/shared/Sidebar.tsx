@@ -83,8 +83,8 @@ export default function Sidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-lg p-3 text-base leading-[150%] tracking-[0%] font-semibold transition-colors",
                 isActive
-                  ? "bg-[#005696] text-[#FFFFFF] font-bold text-[16px]"
-                  : "text-[#111111] hover:bg-[#005696] hover:text-[#FFFFFF] font-semibold",
+                  ? "bg-primary text-[#FFFFFF] font-bold text-[16px]"
+                  : "text-[#111111] hover:bg-primary hover:text-[#FFFFFF] font-semibold",
               )}
             >
               <item.icon className="h-5 w-5" />
