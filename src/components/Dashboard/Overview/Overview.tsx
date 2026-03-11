@@ -1,7 +1,5 @@
 import CardOverview from "./CardOverview";
 import { Anchor, ChartLine, Clock4, TrendingUp } from "lucide-react";
-import RecentOverview from "./RecentOverview";
-import QuickActions from "./QuickActions";
 
 export default function Overview() {
   return (
@@ -28,16 +26,6 @@ export default function Overview() {
             numberInfo={"8.4%"}
             icon={<TrendingUp />}
           />
-        </div>
-
-        <div>
-          <div className="col-span-8">
-            <QuickActions />
-          </div>
-        </div>
-
-        <div>
-          <RecentOverview />
         </div>
       </div>
     </div>
