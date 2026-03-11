@@ -82,19 +82,19 @@ export default function VerifyOTP() {
     <div className="min-h-screen flex items-center justify-center bg-[#FAF8F6]">
       <div className="bg-white w-full max-w-xl rounded-2xl shadow-md p-10">
         {/* Logo */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-2">
           <Image
             src="/images/logo.png"
             alt="Logo"
-            width={80}
-            height={80}
+            width={1000}
+            height={1000}
+            className="h-[30px] w-[200px] object-cover"
             priority
-            className="rounded-xl"
           />
         </div>
 
         <div className="text-center">
-          <h2 className="text-3xl font-semibold text-secondary mb-4">
+          <h2 className="text-3xl font-semibold text-primary mb-4">
             Verify Your Account
           </h2>
           <p className="text-secondary mb-6">

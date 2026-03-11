@@ -46,33 +46,35 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-[500px] bg-white rounded-2xl shadow-lg px-8 py-10">
-
         {/* Logo */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-2">
           <Image
             src="/images/logo.png"
             alt="Logo"
-            width={80}
-            height={80}
+            width={1000}
+            height={1000}
+            className="h-[30px] w-[200px] object-cover"
             priority
           />
         </div>
 
         {/* Heading */}
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-secondary">IWMS Admin</h1>
+          <h1 className="text-3xl font-bold text-primary">Welcome</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Secure access for moderation & support
+            Manage your orders, track shipments, and configure products easily.
           </p>
         </div>
 
         <div className="space-y-3">
-
           {/* Email */}
           <div>
             <Label className="text-sm font-medium">Email Address</Label>
             <div className="relative mt-1">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Mail
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={18}
+              />
               <Input
                 type="email"
                 placeholder="Enter your email"
@@ -87,7 +89,10 @@ export default function Login() {
           <div>
             <Label className="text-sm font-medium">Password</Label>
             <div className="relative mt-1">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Lock
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={18}
+              />
               <Input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
@@ -109,7 +114,10 @@ export default function Login() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Checkbox id="remember" />
-              <label htmlFor="remember" className="text-sm text-gray-600 cursor-pointer">
+              <label
+                htmlFor="remember"
+                className="text-sm text-gray-600 cursor-pointer"
+              >
                 Remember me
               </label>
             </div>

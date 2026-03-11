@@ -31,22 +31,23 @@ export default function ForgetPassword() {
       <div className="w-[500px] bg-white rounded-2xl shadow-lg px-8 py-10">
         {" "}
         {/* Logo */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-2">
           <Image
             src="/images/logo.png"
             alt="Logo"
-            width={80}
-            height={80}
+            width={1000}
+            height={1000}
+            className="h-[30px] w-[200px] object-cover"
             priority
-            className="rounded-xl"
           />
         </div>
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-secondary">
+          <h1 className="text-3xl font-bold text-primary">
             Reset Your Password{" "}
           </h1>
           <p className="text-secondary mt-1 text-sm">
-            Enter your email to recover your password
+            Enter your email address and we’ll send you code to reset your
+            password.
           </p>
         </div>
         <div className="mt-6 space-y-4">
