@@ -6,7 +6,7 @@ export default function Overview() {
     <div >
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-bold">Overview</h1>
+          <h1 className="text-3xl font-bold">Overview</h1>
         </div>
         <div className="stat-cards flex gap-4">
           <CardOverview

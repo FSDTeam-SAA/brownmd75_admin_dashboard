@@ -65,9 +65,9 @@ export default function Categories() {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="min-h-screen">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-black uppercase tracking-tight">
+        <h1 className="text-3xl font-black uppercase tracking-tight">
           Categories
         </h1>
         <Button

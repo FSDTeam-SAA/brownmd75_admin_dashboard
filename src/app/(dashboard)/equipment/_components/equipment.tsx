@@ -69,8 +69,8 @@ export default function EquipmentManagement() {
   };
 
   return (
-    <div className="p-8 bg-[#F9FAFB] min-h-screen">
-      <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen">
+      <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-black uppercase tracking-tight">
           Equipment Management
         </h1>

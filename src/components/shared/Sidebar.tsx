@@ -38,17 +38,6 @@ const navigation = [
     href: "/equipment",
     icon: Box,
   },
-  {
-    name: "Career Management",
-    href: "/submission-forms",
-    icon: BowArrow,
-  },
-  {
-    name: "Performance & Reporting",
-    href: "/submission-forms",
-    icon: ClockPlus,
-  },
-  { name: "Settings", href: "/submission-forms", icon: Settings },
 ];
 
 export default function Sidebar() {
