@@ -3,8 +3,11 @@ import { Anchor, ChartLine, Clock4, TrendingUp } from "lucide-react";
 
 export default function Overview() {
   return (
-    <div className="p-5">
+    <div >
       <div className="space-y-8">
+        <div>
+          <h1 className="text-4xl font-bold">Overview</h1>
+        </div>
         <div className="stat-cards flex gap-4">
           <CardOverview
             title="Total Listings"

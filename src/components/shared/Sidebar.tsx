@@ -2,7 +2,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Ship, LogOut, HardDrive, ShoppingBasket, LayoutDashboard, UsersRound, TvMinimalPlay, Settings, ClockPlus, BowArrow } from "lucide-react";
+import {
+  LogOut,
+  ShoppingBasket,
+  LayoutDashboard,
+  Settings,
+  ClockPlus,
+  BowArrow,
+  List,
+} from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import {
@@ -19,11 +27,10 @@ import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard Overview", href: "/", icon: LayoutDashboard },
-  { name: "Contact Management", href: "/dealers", icon: UsersRound },
   {
-    name: "Content Management",
-    href: "/submission-forms",
-    icon: TvMinimalPlay,
+    name: "Category",
+    href: "/category",
+    icon: List,
   },
   {
     name: "Service Management",
@@ -33,7 +40,7 @@ const navigation = [
   {
     name: "Career Management",
     href: "/submission-forms",
-    icon: BowArrow
+    icon: BowArrow,
   },
   {
     name: "Performance & Reporting",
