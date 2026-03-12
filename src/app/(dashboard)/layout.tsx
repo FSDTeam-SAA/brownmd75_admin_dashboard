@@ -1,4 +1,3 @@
- 
 import DashboardHeader from "@/components/shared/Header";
 import Sidebar from "@/components/shared/Sidebar";
 import { Metadata } from "next";
@@ -16,19 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex min-h-screen relative bg-[#FCFBF8]">
+    <div className="flex min-h-screen relative bg-[#f1f1f1]">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col ml-64">
-        {/* Header */}
-        <div className="sticky top-0 z-10 ">
-          <DashboardHeader />
-        </div>
-
         {/* Page Content */}
-        <main className="flex-1 p-4">{children}</main>
+        <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
   );

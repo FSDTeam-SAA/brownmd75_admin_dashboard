@@ -2,7 +2,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Ship, LogOut, HardDrive, ShoppingBasket, LayoutDashboard, UsersRound, TvMinimalPlay, Settings, ClockPlus, BowArrow } from "lucide-react";
+import {
+  LogOut,
+  ShoppingBasket,
+  LayoutDashboard,
+  Settings,
+  ClockPlus,
+  BowArrow,
+  List,
+  Box,
+} from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import {
@@ -19,28 +28,16 @@ import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard Overview", href: "/", icon: LayoutDashboard },
-  { name: "Contact Management", href: "/dealers", icon: UsersRound },
   {
-    name: "Content Management",
-    href: "/submission-forms",
-    icon: TvMinimalPlay,
+    name: "Category",
+    href: "/category",
+    icon: List,
   },
   {
-    name: "Service Management",
-    href: "/submission-forms",
-    icon: ShoppingBasket,
+    name: "Equipment",
+    href: "/equipment",
+    icon: Box,
   },
-  {
-    name: "Career Management",
-    href: "/submission-forms",
-    icon: BowArrow
-  },
-  {
-    name: "Performance & Reporting",
-    href: "/submission-forms",
-    icon: ClockPlus,
-  },
-  { name: "Settings", href: "/submission-forms", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -83,8 +80,8 @@ export default function Sidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-lg p-3 text-base leading-[150%] tracking-[0%] font-semibold transition-colors",
                 isActive
-                  ? "bg-[#005696] text-[#FFFFFF] font-bold text-[16px]"
-                  : "text-[#111111] hover:bg-[#005696] hover:text-[#FFFFFF] font-semibold",
+                  ? "bg-primary text-[#FFFFFF] font-bold text-[16px]"
+                  : "text-[#111111] hover:bg-primary hover:text-[#FFFFFF] font-semibold",
               )}
             >
               <item.icon className="h-5 w-5" />
