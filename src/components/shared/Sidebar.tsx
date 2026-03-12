@@ -10,6 +10,7 @@ import {
   ClockPlus,
   BowArrow,
   List,
+  Box,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -33,9 +34,9 @@ const navigation = [
     icon: List,
   },
   {
-    name: "Service Management",
-    href: "/submission-forms",
-    icon: ShoppingBasket,
+    name: "Equipment",
+    href: "/equipment",
+    icon: Box,
   },
   {
     name: "Career Management",
