@@ -13,6 +13,7 @@ import {
   Box,
   Users,
   CreditCard,
+  BookAudio,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -39,6 +40,11 @@ const navigation = [
     name: "Equipment",
     href: "/equipment",
     icon: Box,
+  },
+  {
+    name: "Booking History",
+    href: "/booking-history",
+    icon: BookAudio,
   },
   {
     name: "Users",
