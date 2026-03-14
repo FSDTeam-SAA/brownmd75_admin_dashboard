@@ -12,6 +12,7 @@ import {
   List,
   Box,
   Users,
+  CreditCard,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -45,6 +46,11 @@ const navigation = [
     icon: Users,
   },
   {
+    name: "Payment",
+    href: "/payment",
+    icon: CreditCard,
+  },
+  {
     name: "Settings",
     href: "/settings",
     icon: Settings,
@@ -66,7 +72,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="flex  items-center py-5 justify-center px-6">
         <Link href="/">
-          <div className="flex justify-center -mb-5">
+          <div className="flex justify-center -mb-2">
             <Image
               src="/images/logo.png"
               alt="Logo"
