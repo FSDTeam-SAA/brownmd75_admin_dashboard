@@ -11,6 +11,7 @@ import {
   BowArrow,
   List,
   Box,
+  Users,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -37,6 +38,11 @@ const navigation = [
     name: "Equipment",
     href: "/equipment",
     icon: Box,
+  },
+  {
+    name: "Users",
+    href: "/users",
+    icon: Users,
   },
 ];
 
