@@ -65,13 +65,17 @@ export default function Sidebar() {
     <div className="flex h-screen w-64 flex-col bg-[#FFFFFF] border-r border-gray-200 fixed">
       {/* Logo */}
       <div className="flex  items-center py-5 justify-center px-6">
-        <Link href="/" className="flex items-center ">
-          <Image
-            src="/images/dashboard_logo.png"
-            alt="Logo"
-            width={100}
-            height={100}
-          />
+        <Link href="/">
+          <div className="flex justify-center -mb-5">
+            <Image
+              src="/images/logo.png"
+              alt="Logo"
+              width={1000}
+              height={1000}
+              className="h-[30px] w-[200px] object-cover"
+              priority
+            />
+          </div>
         </Link>
       </div>
 
