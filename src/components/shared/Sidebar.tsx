@@ -44,6 +44,11 @@ const navigation = [
     href: "/users",
     icon: Users,
   },
+  {
+    name: "Settings",
+    href: "/settings",
+    icon: Settings,
+  },
 ];
 
 export default function Sidebar() {
