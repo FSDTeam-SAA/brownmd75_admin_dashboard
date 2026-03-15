@@ -11,6 +11,9 @@ import {
   BowArrow,
   List,
   Box,
+  Users,
+  CreditCard,
+  BookAudio,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -38,6 +41,26 @@ const navigation = [
     href: "/equipment",
     icon: Box,
   },
+  {
+    name: "Booking History",
+    href: "/booking-history",
+    icon: BookAudio,
+  },
+  {
+    name: "Users",
+    href: "/users",
+    icon: Users,
+  },
+  {
+    name: "Payment",
+    href: "/payment",
+    icon: CreditCard,
+  },
+  {
+    name: "Settings",
+    href: "/settings",
+    icon: Settings,
+  },
 ];
 
 export default function Sidebar() {
@@ -54,13 +77,17 @@ export default function Sidebar() {
     <div className="flex h-screen w-64 flex-col bg-[#FFFFFF] border-r border-gray-200 fixed">
       {/* Logo */}
       <div className="flex  items-center py-5 justify-center px-6">
-        <Link href="/" className="flex items-center ">
-          <Image
-            src="/images/dashboard_logo.png"
-            alt="Logo"
-            width={100}
-            height={100}
-          />
+        <Link href="/">
+          <div className="flex justify-center -mb-2">
+            <Image
+              src="/images/logo.png"
+              alt="Logo"
+              width={1000}
+              height={1000}
+              className="h-[30px] w-[200px] object-cover"
+              priority
+            />
+          </div>
         </Link>
       </div>
 
