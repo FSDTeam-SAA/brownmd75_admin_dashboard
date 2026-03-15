@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, Plus, Star } from "lucide-react";
+import { Pencil, Trash2, Plus, Star, Package, Circle } from "lucide-react";
 import { toast } from "sonner";
 import { deleteEquipment, getEquipments } from "./api";
 import { EquipmentModal } from "./equipment-modal";
@@ -25,6 +25,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 export default function EquipmentManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,6 +70,45 @@ export default function EquipmentManagement() {
     }
   };
 
+  // Calculate stats from actual data
+  const totalEquipment = data?.meta?.total || 0;
+  const availableEquipment =
+    data?.data?.filter((item: any) => item.status === "available").length || 0;
+  const inMaintenance =
+    data?.data?.filter((item: any) => item.status === "maintenance").length ||
+    0;
+
+  // Get unique categories count
+  const uniqueCategories = new Set(
+    data?.data?.map((item: any) => item.category?._id),
+  ).size;
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "available":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "maintenance":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "inactive":
+        return "bg-gray-100 text-gray-800 border-gray-200";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "available":
+        return <Circle className="w-2 h-2 fill-green-500 text-green-500" />;
+      case "maintenance":
+        return <Circle className="w-2 h-2 fill-yellow-500 text-yellow-500" />;
+      case "inactive":
+        return <Circle className="w-2 h-2 fill-gray-500 text-gray-500" />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <div className="flex justify-between items-center mb-8">
@@ -86,25 +127,33 @@ export default function EquipmentManagement() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {[
-          { label: "Total Equipment", value: data?.meta?.total || 0 },
-          { label: "Total Categories", value: "10" },
-          { label: "Available Equipment", value: "7", trend: "+ 36% ↑" },
-        ].map((stat, i) => (
-          <div
-            key={i}
-            className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative"
-          >
-            <p className="text-gray-500 font-semibold">{stat.label}</p>
-            <h2 className="text-4xl font-black mt-2">{stat.value}</h2>
-            {stat.trend && (
-              <span className="absolute bottom-6 right-6 text-green-500 text-sm font-bold">
-                {stat.trend}
-              </span>
-            )}
-          </div>
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative">
+          <p className="text-gray-500 font-semibold">Total Equipment</p>
+          <h2 className="text-4xl font-black mt-2">{totalEquipment}</h2>
+          <Package className="absolute bottom-6 right-6 w-8 h-8 text-gray-200" />
+        </div>
+
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative">
+          <p className="text-gray-500 font-semibold">Total Categories</p>
+          <h2 className="text-4xl font-black mt-2">{uniqueCategories}</h2>
+        </div>
+
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative">
+          <p className="text-gray-500 font-semibold">Available Equipment</p>
+          <h2 className="text-4xl font-black mt-2">{availableEquipment}</h2>
+          {availableEquipment > 0 && (
+            <span className="absolute bottom-6 right-6 text-green-500 text-sm font-bold">
+              {Math.round((availableEquipment / totalEquipment) * 100)}% of
+              total
+            </span>
+          )}
+        </div>
+
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative">
+          <p className="text-gray-500 font-semibold">In Maintenance</p>
+          <h2 className="text-4xl font-black mt-2">{inMaintenance}</h2>
+        </div>
       </div>
 
       {/* Equipment Table */}
@@ -115,17 +164,21 @@ export default function EquipmentManagement() {
               <TableHead className="font-bold text-black pl-8">
                 Equipment Name
               </TableHead>
+              <TableHead className="font-bold text-black">Category</TableHead>
               <TableHead className="font-bold text-black text-center">
-                Category Name
+                Status
               </TableHead>
               <TableHead className="font-bold text-black text-center">
-                Total Order
+                Quantity
               </TableHead>
               <TableHead className="font-bold text-black text-center">
                 Ratings
               </TableHead>
               <TableHead className="font-bold text-black text-center">
-                Manufacture Year
+                Brand/Model
+              </TableHead>
+              <TableHead className="font-bold text-black text-center">
+                Year
               </TableHead>
               <TableHead className="font-bold text-black text-right pr-8">
                 Action
@@ -135,31 +188,80 @@ export default function EquipmentManagement() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-10">
+                <TableCell colSpan={8} className="text-center py-10">
                   Loading...
+                </TableCell>
+              </TableRow>
+            ) : data?.data?.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={8}
+                  className="text-center py-10 text-gray-500"
+                >
+                  No equipment found. Click &quot;Add Equipment&quot; to create
+                  one.
                 </TableCell>
               </TableRow>
             ) : (
               data?.data?.map((item: any) => (
                 <TableRow
                   key={item._id}
-                  className="h-16 border-b border-gray-50"
+                  className="h-16 border-b border-gray-50 hover:bg-gray-50/50"
                 >
-                  <TableCell className="pl-8 font-medium text-gray-600">
-                    {item.title}
-                  </TableCell>
-                  <TableCell className="text-center text-gray-500">
-                    {item.category?.title}
-                  </TableCell>
-                  <TableCell className="text-center">5</TableCell>
-                  <TableCell className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-[#F59E0B] font-bold">
-                      <Star className="w-4 h-4 fill-current" />{" "}
-                      {item.rating || 0}
+                  <TableCell className="pl-8 font-medium text-gray-900">
+                    <div className="flex items-center gap-3">
+                      {item.images && item.images[0] && (
+                        <Image
+                          src={item.images[0].url || "/placeholder.jpg"}
+                          alt={item.title}
+                          width={1000}
+                          height={1000}
+                          className="w-8 h-8 rounded object-cover"
+                        />
+                      )}
+                      <span>{item.title}</span>
                     </div>
                   </TableCell>
+                  <TableCell className="text-gray-600">
+                    {item.category?.title || "N/A"}
+                  </TableCell>
                   <TableCell className="text-center">
-                    {item.manufacture_year}
+                    <Badge
+                      className={`${getStatusColor(item.status)} font-medium px-3 py-1`}
+                    >
+                      <span className="flex items-center gap-1">
+                        {getStatusIcon(item.status)}
+                        <span className="capitalize">{item.status}</span>
+                      </span>
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center font-medium">
+                    {item.quantity || 0}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <div className="flex items-center justify-center gap-1 text-[#F59E0B] font-bold">
+                      <Star className="w-4 h-4 fill-current" />
+                      {item.rating?.toFixed(1) || "0.0"}
+                      {item.totalReviews > 0 && (
+                        <span className="text-xs text-gray-400 ml-1">
+                          ({item.totalReviews})
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center text-gray-600">
+                    {item.brand && item.model ? (
+                      <span>
+                        {item.brand} / {item.model}
+                      </span>
+                    ) : item.brand || item.model ? (
+                      item.brand || item.model
+                    ) : (
+                      "-"
+                    )}
+                  </TableCell>
+                  <TableCell className="text-center text-gray-600">
+                    {item.manufacture_year || "-"}
                   </TableCell>
                   <TableCell className="text-right pr-8">
                     <div className="flex justify-end gap-2">
