@@ -1,4 +1,4 @@
-'use client'
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -24,7 +24,7 @@ export function UserDetailsModal({ isOpen, onClose, user }: any) {
           <div className="flex justify-center mb-4">
             <div className="w-40 h-40 rounded-2xl overflow-hidden border-4 border-white shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&h=300&auto=format&fit=crop"
+                src="/images/avatar-placeholder.webp"
                 alt="Profile"
                 width={1000}
                 height={1000}
