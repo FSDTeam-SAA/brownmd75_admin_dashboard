@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import {
@@ -15,17 +15,31 @@ import {
 } from "@/components/ui/table";
 import { Eye, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { UserDetailsModal } from "./user-details-modal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 export default function UserManagement() {
   const session = useSession();
   const token = session?.data?.accessToken;
+  const queryClient = useQueryClient();
 
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // You can change this
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // TanStack Query with Token
+  // TanStack Query for fetching users
   const { data, isLoading } = useQuery({
     queryKey: ["users", token],
     queryFn: async () => {
@@ -40,6 +54,32 @@ export default function UserManagement() {
       return response.data;
     },
     enabled: !!token,
+  });
+
+  // Delete mutation - corrected API endpoint
+  const deleteMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/delete-user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      // Invalidate and refetch users query
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User deleted successfully!");
+      setIsDeleteDialogOpen(false);
+      setUserToDelete(null);
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to delete user");
+      setIsDeleteDialogOpen(false);
+    },
   });
 
   // Get users array from data
@@ -72,27 +112,22 @@ export default function UserManagement() {
   // Generate page numbers to display
   const getPageNumbers = () => {
     const pageNumbers = [];
-    const maxVisiblePages = 5; // Number of page buttons to show
+    const maxVisiblePages = 5;
 
     if (totalPages <= maxVisiblePages) {
-      // Show all pages
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
       }
     } else {
-      // Show pages with ellipsis
       if (currentPage <= 3) {
-        // Near the start
         for (let i = 1; i <= 4; i++) pageNumbers.push(i);
         pageNumbers.push("...");
         pageNumbers.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
-        // Near the end
         pageNumbers.push(1);
         pageNumbers.push("...");
         for (let i = totalPages - 3; i <= totalPages; i++) pageNumbers.push(i);
       } else {
-        // Middle
         pageNumbers.push(1);
         pageNumbers.push("...");
         for (let i = currentPage - 1; i <= currentPage + 1; i++)
@@ -107,6 +142,17 @@ export default function UserManagement() {
   const handleViewDetails = (user: any) => {
     setSelectedUser(user);
     setIsModalOpen(true);
+  };
+
+  const handleDeleteClick = (user: any) => {
+    setUserToDelete(user);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (userToDelete) {
+      deleteMutation.mutate(userToDelete._id);
+    }
   };
 
   return (
@@ -188,7 +234,11 @@ export default function UserManagement() {
                       >
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button className="p-1.5 border border-[#EF4444] rounded-full text-[#EF4444] hover:bg-[#EF4444] hover:text-white transition-all">
+                      <button
+                        onClick={() => handleDeleteClick(user)}
+                        disabled={deleteMutation.isPending}
+                        className="p-1.5 border border-[#EF4444] rounded-full text-[#EF4444] hover:bg-[#EF4444] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -248,6 +298,37 @@ export default function UserManagement() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete{" "}
+              <span className="font-semibold">
+                {userToDelete?.firstName} {userToDelete?.lastName}
+              </span>
+              &apos;s account and remove all associated data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              disabled={deleteMutation.isPending}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <UserDetailsModal
         isOpen={isModalOpen}

@@ -68,7 +68,7 @@ export const deleteCategory = async ({
   id: string;
   token?: string;
 }) => {
-  const { data } = await axiosInstance(token).delete(`/category/deleted/${id}`);
+  const { data } = await axiosInstance(token).delete(`/category/delete/${id}`);
   return data;
 };
 
