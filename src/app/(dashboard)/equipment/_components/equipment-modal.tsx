@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -42,6 +43,18 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
         ...editData,
         category: editData.category?._id,
         status: editData.status || "available",
+        // Handle availableDates
+        startDate: editData.availableDates?.startDate
+          ? new Date(editData.availableDates.startDate)
+              .toISOString()
+              .split("T")[0]
+          : "",
+        endDate: editData.availableDates?.endDate
+          ? new Date(editData.availableDates.endDate)
+              .toISOString()
+              .split("T")[0]
+          : "",
+        availableQuantity: editData.availableDates?.quantity || "",
       });
       // Handle multiple images
       if (editData.images && editData.images.length > 0) {
@@ -64,7 +77,10 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
       toast.success(editData ? "Updated successfully" : "Created successfully");
       onOpenChange(false);
     },
-    onError: () => toast.error("Action failed. Please check all fields."),
+    onError: (error: any) => {
+      console.error("Mutation error:", error);
+      toast.error(error?.message || "Action failed. Please check all fields.");
+    },
   });
 
   const handleInputChange = (e: any) => {
@@ -89,24 +105,78 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
   };
 
   const onSave = () => {
+    // ফর্ম ভ্যালিডেশন
+    if (!formData.title) {
+      toast.error("Equipment name is required");
+      return;
+    }
+    if (!formData.category) {
+      toast.error("Category is required");
+      return;
+    }
+    if (!formData.startDate) {
+      toast.error("Start date is required");
+      return;
+    }
+    if (!formData.endDate) {
+      toast.error("End date is required");
+      return;
+    }
+    if (!formData.availableQuantity) {
+      toast.error("Available quantity is required");
+      return;
+    }
+
     const data = new FormData();
+
+    // বেসিক ফিল্ডগুলো যোগ করা
     Object.keys(formData).forEach((key) => {
       if (
         formData[key] !== undefined &&
         formData[key] !== null &&
+        formData[key] !== "" &&
         key !== "images" &&
-        key !== "category"
+        key !== "category" &&
+        key !== "startDate" &&
+        key !== "endDate" &&
+        key !== "availableQuantity"
       ) {
         data.append(key, formData[key]);
       }
     });
 
-    if (formData.category) data.append("category", formData.category);
+    // ক্যাটাগরি যোগ করা
+    if (formData.category) {
+      data.append("category", formData.category);
+    }
 
-    // Append multiple images
+    // ✅ ফিক্স ১: availableDates আলাদা আলাদা ফিল্ড হিসেবে পাঠানো (সহজ সমাধান)
+    if (formData.startDate && formData.endDate && formData.availableQuantity) {
+      data.append("availableDates[startDate]", formData.startDate);
+      data.append("availableDates[endDate]", formData.endDate);
+      data.append("availableDates[quantity]", formData.availableQuantity);
+    }
+
+    // ✅ ফিক্স ২: অথবা JSON.stringify করে পাঠালে সঠিক ফরম্যাটে
+    // if (formData.startDate && formData.endDate && formData.availableQuantity) {
+    //   const availableDates = {
+    //     startDate: formData.startDate,
+    //     endDate: formData.endDate,
+    //     quantity: parseInt(formData.availableQuantity, 10),
+    //   };
+    //   data.append("availableDates", JSON.stringify(availableDates));
+    // }
+
+    // ইমেজ যোগ করা
     files.forEach((file) => {
       data.append("images", file);
     });
+
+    // ডিবাগিং এর জন্য কনসোল লগ
+    console.log("FormData being sent:");
+    for (let pair of data.entries()) {
+      console.log(pair[0], pair[1]);
+    }
 
     mutation.mutate(data);
   };
@@ -162,6 +232,57 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
             />
           </div>
 
+          {/* Available Dates Section */}
+          <div className="col-span-1 md:col-span-2 lg:col-span-3">
+            <h3 className="text-lg font-bold mb-3 text-[#F59E0B]">
+              Available Dates
+            </h3>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-bold">Start Date *</label>
+            <Input
+              name="startDate"
+              type="date"
+              value={formData.startDate || ""}
+              onChange={handleInputChange}
+              min={new Date().toISOString().split("T")[0]}
+              required
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-bold">End Date *</label>
+            <Input
+              name="endDate"
+              type="date"
+              value={formData.endDate || ""}
+              onChange={handleInputChange}
+              min={formData.startDate || new Date().toISOString().split("T")[0]}
+              required
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-bold">Available Quantity *</label>
+            <Input
+              name="availableQuantity"
+              type="number"
+              value={formData.availableQuantity || ""}
+              onChange={handleInputChange}
+              placeholder="10"
+              min="1"
+              required
+            />
+          </div>
+
+          {/* Pricing Section */}
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 mt-2">
+            <h3 className="text-lg font-bold mb-3 text-[#F59E0B]">
+              Pricing Information
+            </h3>
+          </div>
+
           <div className="space-y-1">
             <label className="text-sm font-bold">Price per Hour ($)</label>
             <Input
@@ -170,6 +291,8 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
               value={formData.price_per_hour || ""}
               onChange={handleInputChange}
               placeholder="0.00"
+              min="0"
+              step="0.01"
             />
           </div>
 
@@ -181,6 +304,8 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
               value={formData.price_per_day || ""}
               onChange={handleInputChange}
               placeholder="0.00"
+              min="0"
+              step="0.01"
             />
           </div>
 
@@ -192,6 +317,8 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
               value={formData.price_per_week || ""}
               onChange={handleInputChange}
               placeholder="0.00"
+              min="0"
+              step="0.01"
             />
           </div>
 
@@ -203,6 +330,8 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
               value={formData.price_per_month || ""}
               onChange={handleInputChange}
               placeholder="0.00"
+              min="0"
+              step="0.01"
             />
           </div>
 
@@ -214,6 +343,8 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
               value={formData.deliveryCharge || ""}
               onChange={handleInputChange}
               placeholder="0.00"
+              min="0"
+              step="0.01"
             />
           </div>
 
@@ -225,25 +356,22 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
               value={formData.setupCharge || ""}
               onChange={handleInputChange}
               placeholder="0.00"
+              min="0"
+              step="0.01"
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-sm font-bold">Quantity *</label>
-            <Input
-              name="quantity"
-              type="number"
-              value={formData.quantity || ""}
-              onChange={handleInputChange}
-              placeholder="10"
-              required
-            />
+          {/* Equipment Details Section */}
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 mt-2">
+            <h3 className="text-lg font-bold mb-3 text-[#F59E0B]">
+              Equipment Details
+            </h3>
           </div>
 
           <div className="space-y-1">
             <label className="text-sm font-bold">Status</label>
             <Select
-              value={formData.status}
+              value={formData.status || "available"}
               onValueChange={(v) => setFormData({ ...formData, status: v })}
             >
               <SelectTrigger className="w-full">
@@ -290,6 +418,7 @@ export function EquipmentModal({ open, onOpenChange, editData }: any) {
             />
           </div>
 
+          {/* Image Upload Section */}
           <div className="col-span-1 md:col-span-2 lg:col-span-3 mt-4">
             <label className="text-sm font-bold mb-2 block">
               Upload Equipment Images
