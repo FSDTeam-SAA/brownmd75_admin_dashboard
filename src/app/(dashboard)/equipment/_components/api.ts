@@ -28,7 +28,7 @@ export const createEquipment = async (formData: FormData) => {
 };
 
 export const updateEquipment = async ({ id, formData }: { id: string; formData: FormData }) => {
-  const { data } = await api.patch(`/equipments/${id}`, formData);
+  const { data } = await api.put(`/equipments/${id}`, formData);
   return data;
 };
 
